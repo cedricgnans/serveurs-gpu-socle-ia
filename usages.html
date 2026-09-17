@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coût rendu Cotonou</title>
+<title>Usages au démarrage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -255,92 +255,98 @@ details.checklist li { margin-bottom: 0.5rem; }
 </style>
 </head>
 <body>
-<nav class="topnav"><a href="index.html">Synthèse</a><a href="fiches.html">Fiches détaillées</a><a href="dimensionnement.html">Dimensionnement et modèles</a><a href="cout-cotonou.html" aria-current="page">Coût rendu Cotonou</a><a href="support.html">Support</a><a href="usages.html">Usages au démarrage</a></nav>
+<nav class="topnav"><a href="index.html">Synthèse</a><a href="fiches.html">Fiches détaillées</a><a href="dimensionnement.html">Dimensionnement et modèles</a><a href="cout-cotonou.html">Coût rendu Cotonou</a><a href="support.html">Support</a><a href="usages.html" aria-current="page">Usages au démarrage</a></nav>
 <header class="top">
   <p class="kicker">Volet IA de la Stratégie Orchestra · PP1 Le Socle · sous-projet 1.4 Infrastructure et hébergement</p>
-  <h1>Coût rendu Cotonou</h1>
-  <p class="lede">Ce que coûte réellement chaque option une fois livrée et dédouanée à Cotonou : transport, assurance, droits, TVA.</p>
+  <h1>Usages au démarrage</h1>
+  <p class="lede">Ce qui tournerait sur le serveur le premier jour, pour combien d’utilisateurs, et les ressources que demande l’assistant Jarvis.</p>
 </header>
 <main class="doc">
 <section>
   <h2>L’essentiel</h2>
-  <p>L’enveloppe de 15 à 18 M FCFA couvre le matériel seul. La facture réelle comprend aussi le transport, l’assurance, les droits de douane et la TVA. L’exonération du matériel informatique a été <strong>supprimée au Bénin le 1er janvier 2020</strong> et n’a été rétablie ni en 2024, ni en 2025, ni en 2026 : le serveur est importé au régime général.</p>
+  <p>Le premier usage candidat existe déjà : <strong>Jarvis</strong>, l’assistant pédagogique intégré à Zeno, est en production depuis le 16 septembre 2026 pour les étudiants. Son code a été lu pour en tirer les ressources qu’il demande. Conclusion : il tient très largement sur un serveur à 96 Go, il peut y être branché sans réécriture, et il laisse la place aux usages du back-office prévus par la stratégie.</p>
   <div class="keyfig">
-    <div><strong>≈ 24,4 M</strong><span>FCFA rendu Cotonou pour la recommandation principale (Delta), TVA non récupérable</span></div>
-    <div><strong>+ 38 %</strong><span>entre le prix hors taxes du vendeur et le coût rendu Cotonou</span></div>
-    <div><strong>12,7 M</strong><span>FCFA : prix hors taxes maximal d’un serveur pour tenir 18 M tout compris</span></div>
+    <div><strong>≈ 4 300</strong><span>messages par mois à l’échelle du campus (450 étudiants, 40 % d’adoption), soit environ 150 par jour</span></div>
+    <div><strong>2 appels</strong><span>au modèle par message aujourd’hui : une réponse, puis un contrôle par un second appel « juge »</span></div>
+    <div><strong>0 ligne de code</strong><span>à modifier pour pointer Jarvis vers un serveur interne : le branchement existe déjà dans la configuration</span></div>
   </div>
 </section>
 
 <section>
-  <h2>Ce qui se paie à l’importation</h2>
-  <p>Position douanière 8471 (serveurs). La valeur CAF est le prix du vendeur augmenté du fret et de l’assurance.</p>
+  <h2>Ce qu’est Jarvis</h2>
+  <ul>
+    <li>Un assistant pédagogique « socratique » pour les étudiants, accessible depuis leur portail Zeno : il explique, guide et questionne, mais refuse de donner du code à copier ou la liste des tâches d’un sujet.</li>
+    <li>Il connaît la situation de l’étudiant grâce à <strong>quatre outils en lecture seule</strong> : ses projets, ses résultats, les compétences d’un projet, l’organisation de sa journée.</li>
+    <li>Il s’appuie sur une base documentaire des sujets (recherche par similarité), et chaque réponse est relue par un second appel au modèle, le « juge », qui vérifie qu’elle respecte les règles pédagogiques avant affichage.</li>
+    <li>Texte uniquement : ni voix, ni image.</li>
+    <li>Modèle actuel : Claude Haiku 4.5 par l’API Anthropic, avec sept autres fournisseurs configurables, dont un mode « serveur local » compatible avec l’interface OpenAI.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Les ressources qu’il demande</h2>
   <div class="scroll"><table>
-    <thead><tr><th>Poste</th><th>Taux</th><th>Assiette</th></tr></thead>
+    <thead><tr><th>Besoin</th><th>Valeur relevée dans le code et sa documentation</th><th>Conséquence pour le serveur</th></tr></thead>
     <tbody>
-      <tr><td>Droit de douane (tarif extérieur commun CEDEAO, catégorie 1)</td><td>5 %</td><td>CAF</td></tr>
-      <tr><td>Redevance statistique</td><td>1 %</td><td>CAF</td></tr>
-      <tr><td>Prélèvement communautaire de solidarité (UEMOA)</td><td>0,8 %</td><td>CAF</td></tr>
-      <tr><td>Prélèvement communautaire (CEDEAO)</td><td>0,5 %</td><td>CAF</td></tr>
-      <tr><td>Prélèvement Union africaine</td><td>0,2 %</td><td>CAF</td></tr>
-      <tr><td>Redevance d’aménagement urbain</td><td>0,5 %</td><td>CAF</td></tr>
-      <tr class="total"><td>Droits et prélèvements définitifs</td><td>8 %</td><td>CAF</td></tr>
-      <tr><td>TVA</td><td>18 %</td><td>CAF + droits et prélèvements</td></tr>
-      <tr class="sub"><td>Acompte d’impôt AIB (avec IFU)</td><td>1 %</td><td>CAF + droits. Imputable sur l’impôt sur les sociétés : avance de trésorerie, pas un coût</td></tr>
-      <tr class="sub"><td>Redevance informatique</td><td>10 000 FCFA</td><td>Forfait par déclaration</td></tr>
+      <tr><td>Taille d’une requête</td><td>≈ 1 500 tokens en entrée (consignes, 10 derniers messages, question) et ≈ 330 en sortie ; le juge ajoute ≈ 580 en entrée et 30 en sortie</td><td>Très léger. Une fenêtre de contexte de 8 000 à 16 000 tokens suffit</td></tr>
+      <tr><td>Appels par message</td><td>2 aujourd’hui ; jusqu’à 4 quand les outils sont sollicités ; 15 % de messages régénérés après rejet du juge (hypothèse de l’équipe)</td><td>≈ 10 000 à 15 000 appels par mois, soit moins d’un appel toutes les trois minutes en moyenne</td></tr>
+      <tr><td>Appel d’outils (function calling)</td><td>Obligatoire : c’est ce qui rend Jarvis conscient des données de l’étudiant</td><td>Choisir un modèle ouvert avec appel d’outils natif fiable, et l’activer dans le serveur de modèles</td></tr>
+      <tr><td>Sortie structurée (JSON)</td><td>Obligatoire pour le juge, qui est sur le chemin critique</td><td>Le serveur de modèles doit gérer le décodage contraint par schéma (vLLM le fait)</td></tr>
+      <tr><td>Affichage</td><td>La réponse est entièrement générée, jugée, puis affichée : l’étudiant attend la fin des deux appels</td><td>Ce qui compte est la vitesse de génération par requête, pas le nombre d’utilisateurs</td></tr>
+      <tr><td>Recherche documentaire</td><td>Embeddings Mistral par API, vecteurs stockés dans la base de Zeno</td><td>Optionnel : un petit modèle d’embeddings (2 Go) peut aussi tourner sur le serveur</td></tr>
+      <tr><td>Données manipulées</td><td>Prénom, année, notes, résultats de tests automatiques, crédits, score d’anglais</td><td>Données scolaires nominatives : usage naturellement destiné au palier interne de la passerelle</td></tr>
     </tbody>
   </table></div>
-  <p>L’attestation de vérification documentaire de Bénin Control est obligatoire et gratuite ; elle se dépose sur le guichet unique avant l’arrivée du colis. Il n’y a pas de bordereau de suivi des cargaisons en fret aérien.</p>
-  <div class="callout"><p><strong>La TVA est le poste décisif.</strong> L’enseignement est une activité exonérée de TVA (Code général des impôts, article 229-3). La TVA payée à l’importation n’est alors pas récupérable et devient un coût réel de 3 à 4 M FCFA. Elle ne serait récupérable que si le serveur était acheté par une entité du groupe dont l’activité est soumise à TVA.</p></div>
 </section>
 
 <section>
-  <h2>Tableau comparatif rendu Cotonou</h2>
-  <p>En millions de FCFA. Prix hors taxes du dossier, fret aérien au tarif négocié par le vendeur (fourchette), assurance à 0,6 % de la valeur assurée, provision de 1,5 % de la valeur CAF pour le transitaire et les frais d’aéroport.</p>
+  <h2>Ce que cela donne sur les serveurs proposés</h2>
+  <ul>
+    <li><strong>La charge est minime.</strong> À 150 messages par jour, un GPU de 96 Go est inoccupé plus de 95 % du temps avec Jarvis seul. La contrainte n’est pas le débit mais la qualité du modèle et le temps de réponse par message.</li>
+    <li><strong>Modèles ouverts candidats sur 96 Go</strong> : gpt-oss-120b, GLM-4.5 Air, Llama 3.3 70B, Qwen3 32B, Mistral Small. Les modèles à mélange d’experts (gpt-oss-120b, GLM-4.5 Air) n’activent que 5 à 12 milliards de paramètres par token et répondent plusieurs fois plus vite qu’un modèle dense de 70B : ordre de grandeur de 3 à 6 secondes par message contre 15 à 20 secondes. Ces durées sont des estimations, à mesurer sur la machine.</li>
+    <li><strong>« Le GPU tient-il DeepSeek ? »</strong> La question est ouverte dans la feuille de route de Jarvis. Réponse : non pour DeepSeek V4 Pro (≈ 800 Go en 4 bits), ni pour V4 Flash sur 96 Go (≈ 145 Go) ; V4 Flash devient possible à 192 Go, c’est-à-dire avec la seconde carte. La classe réaliste sur le serveur proposé est 70 à 120 milliards de paramètres.</li>
+    <li><strong>La bascule ne demande pas de développement.</strong> Le mode « serveur local » de Jarvis accepte une adresse de serveur compatible OpenAI : il suffit de créer une configuration pointant vers le serveur de modèles interne. Trois ajustements sont à prévoir avant la mise en service : une limite de longueur de réponse, un quota par utilisateur, et la clé d’accès au serveur interne.</li>
+    <li><strong>Le point à tester en premier</strong> est le juge : sa fiabilité sur des règles pédagogiques précises n’a jamais été mesurée avec un modèle ouvert. Un jeu d’essai de questions « à refuser » et « à accepter » doit être constitué avant toute bascule.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>La trajectoire prévue par l’équipe, et ce qu’elle coûte par API</h2>
+  <p>Hypothèses de l’équipe : 450 étudiants, 40 % d’adoption, 4 320 messages par mois ; palier 4 à 70 % d’adoption.</p>
   <div class="scroll"><table>
-    <thead><tr><th></th><th class="num">Delta D12x<br>Hambourg</th><th class="num">Exxact TS1<br>Californie</th><th class="num">Dell R750xa recond.<br>Manchester</th><th class="num">Kentino AI 96<br>Prague</th></tr></thead>
+    <thead><tr><th>Palier</th><th>Ce qui change</th><th class="num">Appels par message</th><th class="num">Coût mensuel par API (Claude Haiku)</th></tr></thead>
     <tbody>
-      <tr><td>Prix hors taxes du vendeur</td><td class="num">17,60</td><td class="num">16,71</td><td class="num">17,06</td><td class="num">13,71</td></tr>
-      <tr><td>Fret jusqu’à Cotonou</td><td class="num">0,72 à 1,61</td><td class="num">1,25 à 2,79</td><td class="num">0,72 à 1,63</td><td class="num">1,25 à 2,79</td></tr>
-      <tr><td>Assurance</td><td class="num">0,12</td><td class="num">0,12</td><td class="num">0,12</td><td class="num">0,10</td></tr>
-      <tr class="sub"><td>Valeur CAF (hypothèse centrale)</td><td class="num">18,89</td><td class="num">18,85</td><td class="num">18,35</td><td class="num">15,83</td></tr>
-      <tr><td>Droits et prélèvements, 8 %</td><td class="num">1,51</td><td class="num">1,51</td><td class="num">1,47</td><td class="num">1,27</td></tr>
-      <tr><td>TVA, 18 %</td><td class="num">3,67</td><td class="num">3,67</td><td class="num">3,57</td><td class="num">3,08</td></tr>
-      <tr><td>Transitaire et frais (provision)</td><td class="num">0,29</td><td class="num">0,29</td><td class="num">0,29</td><td class="num">0,25</td></tr>
-      <tr class="total"><td>Rendu Cotonou, TVA non récupérable</td><td class="num">24,4</td><td class="num">24,3</td><td class="num">23,7</td><td class="num">20,4</td></tr>
-      <tr class="sub"><td>Fourchette selon le fret</td><td class="num">23,8 à 25,0</td><td class="num">23,3 à 25,3</td><td class="num">23,1 à 24,3</td><td class="num">19,4 à 21,4</td></tr>
-      <tr><td>Rendu Cotonou, si la TVA est récupérable</td><td class="num">20,7</td><td class="num">20,7</td><td class="num">20,1</td><td class="num">17,4</td></tr>
-      <tr class="sub"><td>Avance AIB à décaisser en plus</td><td class="num">0,20</td><td class="num">0,20</td><td class="num">0,20</td><td class="num">0,17</td></tr>
+      <tr><td>0, en production</td><td>Une réponse et un juge</td><td class="num">2</td><td class="num">≈ 17 $</td></tr>
+      <tr><td>1</td><td>Boucle d’agent et mémoire courte</td><td class="num">≈ 7</td><td class="num">≈ 93 $</td></tr>
+      <tr><td>3</td><td>Mémoire longue, outils Git, fournisseur interchangeable</td><td class="num">≈ 14</td><td class="num">≈ 283 $</td></tr>
+      <tr><td>4</td><td>« Jarvis Code », assistant de programmation complet</td><td class="num">≈ 27</td><td class="num">≈ 2 105 $, soit ≈ 1,2 M FCFA</td></tr>
     </tbody>
   </table></div>
-  <p>S’ajoutent dans tous les cas l’onduleur de 3 kVA et la mise en baie (0,8 à 1,5 M FCFA), un renfort éventuel de climatisation, l’installation et la mise en service. Le devis Dell par un partenaire local sera exprimé directement rendu Cotonou, dédouané : c’est la bonne base de comparaison avec ce tableau.</p>
+  <div class="callout"><p><strong>Lecture honnête.</strong> Au palier actuel, Jarvis coûte environ 10 000 FCFA par mois en API : ce n’est pas lui qui justifie financièrement le serveur. Ce qui le justifie, c’est que des données scolaires nominatives cessent de partir chez un fournisseur étranger, que le coût devient fixe alors que les paliers 3 et 4 multiplient la facture API par quinze à cent, et que le même serveur sert en même temps le back-office.</p></div>
 </section>
 
 <section>
-  <h2>Lecture</h2>
-  <ul>
-    <li><strong>Aucune option à 96 Go ne tient dans 18 M FCFA une fois rendue à Cotonou</strong> si la TVA est un coût réel.</li>
-    <li>La recommandation principale (Delta) revient à environ 24 à 25 M FCFA, l’option la moins chère (Kentino) à environ 20 M.</li>
-    <li>Le fret depuis Hambourg ou Manchester coûte à peu près moitié moins que depuis la Californie ou Prague : l’avantage de prix d’Exxact disparaît une fois le transport compté.</li>
-    <li>Puget Systems sort du dossier : ce vendeur n’exporte et ne garantit ses machines que vers le Canada.</li>
-  </ul>
-  <h3>Trois leviers à instruire avec la direction financière</h3>
-  <ol>
-    <li><strong>Faire porter l’achat par une entité du groupe soumise à TVA</strong>, qui refacture l’usage. La TVA à l’importation devient déductible. Le remboursement de crédit de TVA n’étant ouvert qu’au-delà de 40 M FCFA d’investissement, le crédit s’imputerait sur la TVA collectée.</li>
-    <li><strong>Demander l’admission en franchise de l’article 290 du Code des douanes</strong>, prévue pour les envois destinés aux établissements d’enseignement reconnus. Elle est discrétionnaire et suppose une démarche préalable auprès des ministères.</li>
-    <li><strong>Ajuster l’enveloppe</strong> à environ 26 M FCFA tout compris pour la recommandation principale, ou retenir l’option la moins chère autour de 21 à 22 M.</li>
-  </ol>
-</section>
-
-<section>
-  <h2>Transport et formalités</h2>
-  <ul>
-    <li><strong>Conditions de vente.</strong> Delta vend départ entrepôt de Glinde et expédie les serveurs par Kuehne+Nagel ; l’assurance est sur demande. Bargain Hardware expédie sur palette en fret aérien tout colis de plus de 30 kg et facture le transport au coût réel. Exxact ne publie aucune condition d’export : tout est à demander dans le devis. Kentino ne livre pas l’Afrique depuis sa boutique en ligne : devis par courriel.</li>
-    <li><strong>Emballage à exiger.</strong> Palette ou caisse, carton de 100 cm au plus, témoins de choc, cartes GPU calées ou expédiées à part, photos avant départ. À l’arrivée : photos, réserves écrites sur le bon de livraison, vérification de l’assise des cartes avant la première mise sous tension.</li>
-    <li><strong>Contrôle des exportations.</strong> Aucune licence n’est attendue pour un utilisateur civil au Bénin, ni pour la RTX PRO 6000 ni pour l’A100. Un dossier d’utilisateur final sera demandé et allonge le délai, surtout pour les A100 : Bargain Hardware ne prend aucun paiement avant validation par son service conformité.</li>
-  </ul>
-  <div class="todo"><p><strong>Reste à obtenir.</strong> Les montants de fret et de transit sont des estimations. Ils seront remplacés par les devis fermes des vendeurs (livrés Cotonou, avec date de validité) et par les devis de deux ou trois transitaires de Cotonou, à qui demander aussi une liquidation pro forma et la faisabilité de la franchise de l’article 290.</p></div>
-  <p class="meta">Sources : lois de finances 2020 à 2026 du Bénin, Code général des impôts 2025, tarif du guichet unique du commerce extérieur consulté le 17 septembre 2026, guide tarifaire DHL Express 2026, conditions de vente des vendeurs.</p>
+  <h2>Proposition d’usages au premier jour</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Usage</th><th>Utilisateurs</th><th>Ce qui tourne sur le serveur</th><th>État</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Jarvis</strong> (portail étudiant de Zeno)</td><td>≈ 180 étudiants actifs par mois, quelques utilisateurs simultanés</td><td>Le modèle commun, servi par vLLM</td><td>En production sur API ; bascule possible par configuration après tests du juge</td></tr>
+      <tr><td><strong>Passerelle IA gouvernée</strong>, palier « données sensibles » (PP1)</td><td>Équipes du back-office, 20 à 60 personnes à terme</td><td>Le même modèle commun</td><td>À construire : c’est la raison d’être du serveur</td></tr>
+      <tr><td>Recherche documentaire (embeddings)</td><td>Jarvis, puis les agents métier</td><td>Un petit modèle d’embeddings, ≈ 2 Go</td><td>Optionnel au démarrage</td></tr>
+      <tr><td>Autres applications internes</td><td>À recenser</td><td>À préciser</td><td>Questionnaire de ressources à faire remplir par chaque porteur</td></tr>
+    </tbody>
+  </table></div>
+  <p>Un seul modèle partagé suffit au démarrage : gpt-oss-120b occupe environ 63 Go, ce qui laisse une trentaine de gigaoctets pour les conversations simultanées de Jarvis et du back-office. La seconde carte, en 2027, permettrait de dédier une carte aux étudiants et une aux données sensibles du groupe.</p>
+  <div class="todo"><p><strong>Reste à obtenir auprès de l’équipe Zeno.</strong></p>
+    <ul>
+      <li>Les chiffres réels depuis la mise en production : messages par jour, étudiants distincts, taux de rejet du juge, temps de réponse observé.</li>
+      <li>Le modèle réellement configuré en production, et si la base documentaire y a été chargée.</li>
+      <li>Si le mode « serveur local » a déjà été essayé, avec quel modèle et quel taux de réussite des appels d’outils.</li>
+      <li>Quel palier de la feuille de route est effectivement planifié, et pour quand.</li>
+      <li>Qui exploitera le serveur de modèles : le cluster actuel n’a ni nœud GPU ni service de ce type.</li>
+    </ul>
+  </div>
+  <p class="meta">Source : lecture du code et de la documentation d’architecture de Jarvis dans le dépôt Zeno (branche principale, 17 septembre 2026). Les estimations de temps de réponse sont indicatives et doivent être mesurées sur la machine.</p>
 </section>
 
 </main>
