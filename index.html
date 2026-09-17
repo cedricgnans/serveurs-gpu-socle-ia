@@ -146,6 +146,10 @@ footer { padding: 28px 0 56px; color: var(--ink-3); font-size: 0.9rem; border-to
 .modelfit td.no { color: var(--ink-3); }
 .modelfit .scroll { overflow-x: auto; }
 
+.brief h3 { font-size: 1.15rem; margin: 1.6rem 0 0.6rem; }
+.brief ol { padding-left: 1.2em; max-width: 72ch; }
+.brief ol li { margin-bottom: 0.5rem; }
+
 </style>
 </head>
 <body>
@@ -158,15 +162,37 @@ footer { padding: 28px 0 56px; color: var(--ink-3); font-size: 0.9rem; border-to
 
 <main>
 <section class="brief">
-  <h2>En bref</h2>
-  <p>Huit machines ont été retenues après vérification de leurs prix sur les pages des vendeurs, sur une quarantaine de configurations examinées chez une quinzaine de vendeurs européens et américains. Sept tiennent dans l’enveloppe, la huitième sert de repère. Toutes sont des serveurs rack neufs ou reconditionnés, avec au moins 96 Go de mémoire GPU, le seuil pour faire tourner un modèle de la classe 70 milliards de paramètres.</p>
+  <h2>Recommandations</h2>
+  <p>Huit machines ont été retenues après vérification de leurs prix sur les pages des vendeurs, parmi une quarantaine de configurations examinées chez une quinzaine de vendeurs européens et américains. Sept tiennent dans l’enveloppe, la huitième sert de repère. Toutes sont des serveurs rack, neufs ou reconditionnés, avec au moins 96 Go de mémoire GPU, le seuil pour faire tourner un modèle de la classe 70 milliards de paramètres.</p>
+
+<h3>Recommandation principale : Delta Computer D12x-M2-SP-2xGPU, environ 17,6 M FCFA</h3>
+<p>Serveur 2U récent (Xeon 6, DDR5, PCIe 5.0) avec une carte NVIDIA RTX PRO 6000 Blackwell de 96 Go, alimentations redondantes, deux ports 10 GbE, SSD NVMe. Quatre raisons le placent devant les autres :</p>
 <ul>
-<li><strong>Choix conseillé : Delta Computer D12x-M2-SP-2xGPU</strong> (Allemagne), 2U récent avec une carte de 96 Go, alimentations redondantes, prix en euros, en stock, et un second emplacement GPU libre pour doubler la mémoire en 2027. Environ 17,6 M FCFA.</li>
-<li><strong>Alternative américaine : Exxact TensorEX TS1</strong>, la même carte serveur dans un 1U complet et moins cher (16,7 M FCFA), mais sans possibilité d’ajouter une seconde carte.</li>
-<li><strong>Le plus de mémoire pour le prix : Dell R750xa reconditionné avec quatre A100 40 Go</strong> chez Bargain Hardware, 160 Go et trois ans de garantie pour 17,1 M FCFA, au prix d’une génération de cartes plus ancienne.</li>
-<li><strong>Si le budget devait être préservé : Kentino AI 96</strong>, un 4U européen à 13,7 M FCFA, à condition d’y ajouter la seconde alimentation.</li>
+<li><strong>Évolutif.</strong> Le second emplacement GPU est libre : en 2027, quand les agents IA métier seront déployés dans toutes les équipes (PP4), une deuxième carte porte la mémoire à 192 Go sans changer de serveur. C’est le seul moyen d’atteindre 192 Go dans l’enveloppe, en deux temps.</li>
+<li><strong>Prix en euros.</strong> Le franc CFA étant à parité fixe avec l’euro, le montant en FCFA est connu à la commande ; les offres américaines dépendent du cours du dollar.</li>
+<li><strong>En stock</strong> chez un intégrateur allemand établi, avec livraison depuis l’Union européenne, plus simple pour la logistique qu’un envoi depuis les États-Unis.</li>
+<li><strong>Carte serveur disponible.</strong> Le configurateur affiche la version Max-Q de la carte ; Delta vend la version serveur passive au même prix, à demander dans le devis.</li>
 </ul>
-<p>Dans tous les cas, la démarche suivante est la même : demander un devis ferme au vendeur, y faire figurer la version serveur passive de la carte quand le configurateur affiche la version station de travail, et vérifier l’alimentation redondante. Les prix des GPU montent depuis le début 2026 : un devis daté vaut mieux qu’un prix catalogue.</p>
+
+<h3>Solution de repli : Exxact TensorEX TS1, environ 16,7 M FCFA</h3>
+<p>Même carte de 96 Go dans un serveur 1U complet, livré configuré et testé, moins cher d’environ 900 000 FCFA. À retenir si Delta ne peut pas livrer au Bénin ou si le devis dépasse l’enveloppe. Deux limites : un seul emplacement GPU, donc pas d’extension à 192 Go, et une carte de 600 W qui exige une salle serveur maintenue à 25 °C.</p>
+
+<h3>Deux options selon les priorités</h3>
+<ul>
+<li><strong>Priorité à la mémoire : Dell PowerEdge R750xa reconditionné avec quatre A100 de 40 Go</strong> chez Bargain Hardware, 160 Go dès aujourd’hui et trois ans de garantie pour 17,1 M FCFA. C’est la seule machine qui fait tourner Qwen3 235B dans l’enveloppe, au prix d’une génération de cartes de 2020 et de formalités de contrôle à l’exportation sur les A100.</li>
+<li><strong>Priorité au budget : Kentino AI 96</strong>, un 4U européen à 13,7 M FCFA avec la même carte de 96 Go en version station de travail. À ne retenir qu’en ajoutant la seconde alimentation, et en acceptant une plateforme de 2021.</li>
+</ul>
+
+<h3>Ce que le département achats doit exiger dans chaque devis</h3>
+<ol>
+<li>La carte en version <strong>Server Edition passive</strong> quand le configurateur affiche une version station de travail (Delta, Kentino).</li>
+<li>Deux alimentations redondantes dimensionnées pour la carte (au moins 1 600 W au total pour une carte de 600 W).</li>
+<li>128 Go de mémoire minimum, deux SSD NVMe d’au moins 1,9 To, une carte réseau 10 GbE.</li>
+<li>Une garantie de trois ans sur le serveur et la mention de la garantie NVIDIA de trois ans sur la carte.</li>
+<li>Un devis ferme valable 30 jours, en euros de préférence, précisant les conditions de livraison jusqu’à Cotonou (Incoterm) et la classification douanière du matériel.</li>
+<li>Une clause de substitution si la carte est en rupture, avec accord préalable du SI sur le modèle de remplacement.</li>
+</ol>
+<p>Quel que soit le choix, la pile logicielle est la même et gratuite (Linux, vLLM, passerelle) ; le vrai poste caché est le temps d’ingénieur pour l’installation et la supervision, à prévoir dans le chantier Compétences.</p>
 </section>
 
 <section class="ruler-wrap">
