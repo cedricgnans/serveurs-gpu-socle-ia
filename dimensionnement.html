@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dimensionnement et modèles</title>
+<meta name="description" content="Propositions de serveurs GPU dans l’enveloppe de 15 à 18 millions de FCFA pour l’infrastructure du volet IA de la Stratégie Orchestra.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F3F5F2;
+  --surface: #FFFFFF;
+  --ink: #1A1D21;
+  --ink-2: #4B5563;
+  --ink-3: #7B8590;
+  --rule: #D5DAD3;
+  --teal: #0F5B5B;
+  --teal-ink: #0B4747;
+  --teal-soft: #DCE9E6;
+  --copper: #B5602B;
+  --copper-soft: #F3E4D8;
+  --band: rgba(15, 91, 91, 0.10);
+  --focus: #B5602B;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14181A; --surface: #1D2326; --ink: #ECEFEA; --ink-2: #B3BCB6; --ink-3: #8A948E;
+    --rule: #33403C; --teal: #6FBFB5; --teal-ink: #8FD3CA; --teal-soft: #1E3A37;
+    --copper: #E0925C; --copper-soft: #3E2A1C; --band: rgba(111, 191, 181, 0.14);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14181A; --surface: #1D2326; --ink: #ECEFEA; --ink-2: #B3BCB6; --ink-3: #8A948E;
+  --rule: #33403C; --teal: #6FBFB5; --teal-ink: #8FD3CA; --teal-soft: #1E3A37;
+  --copper: #E0925C; --copper-soft: #3E2A1C; --band: rgba(111, 191, 181, 0.14);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px; line-height: 1.55;
+}
+a { color: var(--teal-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, .btn:focus-visible, .mark:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+h1, h2, h3 { line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 700; max-width: 28ch; }
+h2 { font-size: 1.55rem; font-weight: 600; margin-bottom: 1rem; }
+h3 { font-size: 1.35rem; font-weight: 600; }
+p { margin: 0 0 1rem; max-width: 70ch; }
+
+.top, main, footer { width: min(1080px, 100% - 32px); margin-inline: auto; }
+.top { padding: 56px 0 24px; border-bottom: 2px solid var(--teal); }
+.kicker { color: var(--ink-2); font-size: 0.95rem; margin-bottom: 1.2rem; max-width: none; }
+.lede { font-size: 1.2rem; margin-top: 1.2rem; max-width: 62ch; }
+.dateline { color: var(--ink-2); font-size: 0.95rem; }
+
+main > section { padding: 44px 0 12px; }
+main > section + section { border-top: 1px solid var(--rule); }
+
+/* budget ruler */
+.ruler { width: 100%; height: auto; display: block; overflow: visible; }
+.ruler .band { fill: var(--band); }
+.ruler .band-label { fill: var(--teal-ink); font-size: 13px; font-weight: 600; }
+.ruler .axis { stroke: var(--ink-3); stroke-width: 1.5; }
+.ruler .tick { fill: var(--ink-2); font-size: 13px; }
+.ruler .stem { stroke: var(--rule); stroke-width: 1.5; }
+.ruler .dot { fill: var(--teal); stroke: var(--surface); stroke-width: 2; }
+.ruler .dot.sous { fill: var(--surface); stroke: var(--teal); stroke-width: 2.5; }
+.ruler .dot.hors { fill: var(--ink-3); }
+.ruler .dot-label { fill: var(--ink); font-size: 13px; font-weight: 600; }
+.ruler .mark { cursor: default; }
+.ruler .mark:hover .dot, .ruler .mark:focus-visible .dot { r: 8; }
+.legend { list-style: none; padding: 0; margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px 24px; font-size: 0.95rem; color: var(--ink-2); }
+.legend .n { display: inline-block; min-width: 1.5em; font-weight: 600; color: var(--ink); }
+.legend .lp { color: var(--ink); font-weight: 500; margin-left: 4px; }
+
+/* sizing */
+.sizing table, .training table, .modelfit table, .cmp { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+.sizing th, .sizing td, .training th, .training td, .modelfit th, .modelfit td, .cmp th, .cmp td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.sizing th, .training th, .modelfit th, .cmp th { font-weight: 600; color: var(--ink-2); border-bottom: 2px solid var(--rule); }
+.cmp td.num, .cmp th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sizing .models, .training .models { margin: 1rem 0 1.5rem; max-width: 820px; }
+.callout { background: var(--teal-soft); border-left: 4px solid var(--teal); padding: 14px 18px; margin: 1.2rem 0; border-radius: 0 6px 6px 0; max-width: 820px; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* fiches */
+.fiche { display: grid; grid-template-columns: 260px 1fr; gap: 28px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 26px; margin-bottom: 22px; }
+.fiche-img { display: flex; align-items: flex-start; justify-content: center; }
+.fiche-img img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 6px; background: #fff; }
+.noimg { width: 100%; height: 160px; display: grid; place-items: center; color: var(--ink-3); border: 1px dashed var(--rule); border-radius: 6px; font-size: 0.9rem; text-align: center; padding: 12px; }
+.vendor { color: var(--ink-2); font-size: 0.95rem; margin-bottom: 4px; }
+.config { color: var(--ink-2); margin: 6px 0 14px; font-size: 1rem; }
+.price { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 18px; align-items: baseline; margin-bottom: 14px; }
+.price-main { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; grid-row: 1; }
+.price-sub { color: var(--ink-2); font-size: 0.95rem; grid-row: 2; grid-column: 1 / -1; }
+.price-tag { grid-row: 1; justify-self: start; font-size: 0.85rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-ink); }
+.price-tag.hors { background: var(--copper-soft); color: var(--copper); }
+.price-tag.sous { background: transparent; border: 1.5px solid var(--teal); color: var(--teal-ink); }
+.desc { max-width: 68ch; }
+.specs { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; margin: 0 0 14px; font-size: 0.95rem; }
+.specs .k { color: var(--ink-2); }
+.specs .v { color: var(--ink); }
+.meta { color: var(--ink-3); font-size: 0.85rem; max-width: none; }
+.btn { display: inline-block; background: var(--teal); color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; }
+.btn:hover { background: var(--teal-ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #0F1A19; } :root:not([data-theme="light"]) .btn:hover { background: var(--teal); filter: brightness(1.1); } }
+:root[data-theme="dark"] .btn { color: #0F1A19; }
+
+.scroll { overflow-x: auto; }
+.cmp a { color: var(--ink); }
+
+.outside ul, .method ul { padding-left: 1.2em; max-width: 72ch; }
+.outside li, .method li { margin-bottom: 0.6rem; }
+footer { padding: 28px 0 56px; color: var(--ink-3); font-size: 0.9rem; border-top: 1px solid var(--rule); margin-top: 32px; }
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .top { padding-top: 36px; }
+  .fiche { grid-template-columns: 1fr; gap: 16px; padding: 18px; }
+  .fiche-img img { max-height: 180px; }
+  .price { grid-template-columns: 1fr; }
+  .price-tag { grid-row: auto; }
+  .specs { grid-template-columns: 1fr; gap: 2px; }
+  .specs .k { margin-top: 6px; font-size: 0.85rem; }
+  .ruler .tick, .ruler .dot-label, .ruler .band-label { font-size: 17px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ruler .dot { transition: r 120ms ease; }
+}
+.brief ul { padding-left: 1.2em; max-width: 72ch; }
+.brief li { margin-bottom: 0.6rem; }
+.ruler-key { color: var(--ink-2); font-size: 0.9rem; margin: 6px 0 0; display: flex; gap: 8px 18px; flex-wrap: wrap; align-items: center; }
+.ruler-key .key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--teal); }
+.ruler-key .key.sous { background: transparent; border: 2px solid var(--teal); }
+.ruler-key .key.hors { background: var(--ink-3); }
+
+.cmp .tv { color: var(--ink-3); font-size: 0.85rem; }
+
+.modelfit .models.wide { max-width: none; }
+.modelfit td.ok { color: var(--teal-ink); font-weight: 500; }
+.modelfit td.mid { color: var(--copper); font-weight: 500; }
+.modelfit td.no { color: var(--ink-3); }
+.modelfit .scroll { overflow-x: auto; }
+
+.brief h3 { font-size: 1.15rem; margin: 1.6rem 0 0.6rem; }
+.brief ol { padding-left: 1.2em; max-width: 72ch; }
+.brief ol li { margin-bottom: 0.5rem; }
+
+/* --- navigation --- */
+.topnav { width: min(1080px, 100% - 32px); margin: 18px auto 0; display: flex; gap: 6px; flex-wrap: wrap; }
+.topnav a { text-decoration: none; color: var(--ink-2); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--rule); font-size: 0.92rem; font-weight: 500; }
+.topnav a[aria-current="page"] { background: var(--teal); color: #fff; border-color: var(--teal); }
+:root[data-theme="dark"] .topnav a[aria-current="page"] { color: #0F1A19; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .topnav a[aria-current="page"] { color: #0F1A19; } }
+.top { padding-top: 34px; }
+.hint { color: var(--ink-2); font-size: 0.95rem; }
+
+/* --- recommendation list --- */
+.reco-list { list-style: none; padding: 0; margin: 0 0 1rem; max-width: 78ch; }
+.reco-list li { padding: 12px 16px; border-left: 4px solid var(--rule); margin-bottom: 8px; background: var(--surface); border-radius: 0 6px 6px 0; }
+.reco-list li.principal { border-left-color: var(--teal); background: var(--teal-soft); }
+.reco-list li.repli { border-left-color: var(--teal); border-left-style: dashed; }
+details.checklist { max-width: 78ch; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 16px; }
+details.checklist summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+details.checklist ol { padding-left: 1.2em; margin-top: 10px; }
+details.checklist li { margin-bottom: 0.5rem; }
+
+/* --- compact cards --- */
+.card { position: relative; display: grid; grid-template-columns: 150px 1fr 230px; gap: 22px; align-items: center; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 22px; margin-bottom: 14px; }
+.card.principal, .fiche.principal { border: 2px solid var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+.card.repli, .fiche.repli { border: 2px dashed var(--teal); }
+.card.option-memoire, .card.option-budget, .fiche.option-memoire, .fiche.option-budget { border-color: var(--ink-3); }
+.ribbon { position: absolute; top: -12px; left: 18px; font-size: 0.8rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--ink-3); color: #fff; }
+.ribbon.principal { background: var(--teal); }
+.ribbon.repli { background: var(--surface); color: var(--teal-ink); border: 1.5px dashed var(--teal); }
+.ribbon.option-memoire, .ribbon.option-budget { background: var(--surface); color: var(--ink-2); border: 1px solid var(--ink-3); }
+.card-img img { width: 100%; max-height: 110px; object-fit: contain; background: #fff; border-radius: 6px; }
+.card-main h3 { font-size: 1.2rem; margin: 2px 0 4px; }
+.card-main .vendor { margin-bottom: 0; }
+.card-main .config { margin: 0 0 8px; font-size: 0.92rem; }
+.card-main .pitch { margin: 0; font-size: 0.98rem; }
+.card-side { display: grid; gap: 4px; justify-items: end; text-align: right; }
+.gpu-mem { display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 4px; }
+.gpu-mem .big { font-size: 1.35rem; font-weight: 700; color: var(--teal-ink); line-height: 1.1; }
+.gpu-mem .small { font-size: 0.78rem; color: var(--ink-3); }
+.card-side .price-main { font-size: 1.45rem; }
+.card-side .price-sub { font-size: 0.85rem; color: var(--ink-2); }
+.card-side .price-tag { margin-top: 4px; }
+.actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.btn.small { padding: 7px 12px; font-size: 0.85rem; }
+.btn.ghost { background: transparent; color: var(--teal-ink); border: 1.5px solid var(--teal); }
+.btn.ghost:hover { background: var(--teal-soft); }
+.ruler .dot.reco { stroke: var(--copper); stroke-width: 3; }
+.ruler a.mark { cursor: pointer; }
+.ruler-key .key.reco { background: var(--teal); box-shadow: 0 0 0 2.5px var(--copper); }
+.cmp tr.principal td { background: var(--teal-soft); }
+
+/* --- more --- */
+.more-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.more-card { display: grid; gap: 6px; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; }
+.more-card strong { color: var(--teal-ink); }
+.more-card span { color: var(--ink-2); font-size: 0.95rem; }
+.more-card:hover { border-color: var(--teal); }
+
+@media (max-width: 820px) {
+  .card { grid-template-columns: 110px 1fr; }
+  .card-side { grid-column: 1 / -1; justify-items: start; text-align: left; }
+  .gpu-mem { align-items: flex-start; }
+  .actions { justify-content: flex-start; }
+}
+@media (max-width: 520px) { .card { grid-template-columns: 1fr; } .card-img img { max-height: 90px; } }
+.card-side .price-main, .card-side .price-tag, .card-side .gpu-mem { grid-row: auto; grid-column: 1; }
+.card-side .price-main { line-height: 1.1; }
+@media (max-width: 720px) {
+  .ruler .tick, .ruler .dot-label { font-size: 24px; }
+  .ruler .band-label { font-size: 22px; }
+  .ruler .dot { r: 9; }
+}
+.card-side .price-sub { grid-row: auto; grid-column: 1; }
+.card-side > * { grid-column: 1; grid-row: auto; }
+.fiche { position: relative; }
+@media (max-width: 720px) {
+  .ruler .tick, .ruler .dot-label { font-size: 30px; }
+  .ruler .band-label { font-size: 28px; }
+  .ruler .dot { r: 11; }
+  .ruler .dot.reco { stroke-width: 4; }
+}
+@media (max-width: 720px) {
+  .ruler .tick, .ruler .dot-label { font-size: 22px; }
+  .ruler .band-label { font-size: 20px; }
+  .ruler .dot { r: 8; }
+}
+
+</style>
+</head>
+<body>
+<nav class="topnav"><a href="index.html">Synthèse</a><a href="fiches.html">Fiches détaillées</a><a href="dimensionnement.html" aria-current="page">Dimensionnement et modèles</a></nav>
+<header class="top">
+  <p class="kicker">Volet IA de la Stratégie Orchestra · PP1 Le Socle · sous-projet 1.4 Infrastructure et hébergement</p>
+  <h1>Dimensionnement et modèles</h1>
+  <p class="lede">Ce qui détermine la taille des machines, les modèles ouverts qu’elles peuvent faire tourner, et ce que demanderait l’entraînement.</p>
+  
+</header>
+<main>
+
+<section class="sizing">
+  <h2>Pourquoi ces machines et pas d’autres</h2>
+  <p>Le besoin est de l’<strong>inférence</strong>, pas de l’entraînement : faire répondre des modèles ouverts déjà entraînés (Llama, Qwen, Mistral, gpt-oss) aux agents métier, à l’interrogation en langage naturel et aux traitements de documents sensibles. Pour ce type d’usage, la ressource qui compte d’abord est la <strong>mémoire du GPU</strong>, parce que le modèle entier doit y tenir, plus une réserve pour les conversations en cours.</p><p>Deux points de repère fixent la cible. Un modèle de la classe 70 milliards de paramètres compressé en FP8 occupe environ 70 Go ; compressé en 4 bits, environ 40 Go. Un modèle de la classe 30 milliards occupe 16 à 35 Go selon la compression. Il faut y ajouter 10 à 40 Go de réserve pour servir 20 à 60 personnes en même temps sans faire attendre. La cible retenue est donc <strong>96 Go de mémoire GPU au minimum, 160 à 192 Go pour être confortable</strong>.</p><table class="models"><thead><tr><th>Modèle ouvert (exemples)</th><th>Mémoire nécessaire</th><th>Tient sur</th></tr></thead><tbody><tr><td>Qwen3 32B ou Mistral Small, FP8</td><td>≈ 35 Go + réserve</td><td>1 carte de 48 Go</td></tr><tr><td>gpt-oss-120b (MXFP4)</td><td>≈ 63 Go + réserve</td><td>1 carte de 80 ou 96 Go</td></tr><tr><td>Llama 3.3 70B, 4 bits (NVFP4/INT4)</td><td>≈ 40 Go + réserve</td><td>1 carte de 96 Go, ou 2 × 48 Go</td></tr><tr><td>Llama 3.3 70B, FP8</td><td>≈ 70 Go + réserve</td><td>2 × 48 Go, 4 × 40 Go ou 2 × 96 Go</td></tr></tbody></table><p>Dans l’enveloppe, trois familles de GPU sont accessibles. La <strong>NVIDIA L40S</strong> (48 Go, génération Ada, refroidissement passif, 350 W) est la carte d’inférence la plus répandue dans les serveurs 2U : deux cartes donnent 96 Go. La <strong>NVIDIA RTX PRO 6000 Blackwell Server Edition</strong> (96 Go, génération Blackwell, 2025) offre la même mémoire en une seule carte, avec plus de débit et le support du format 4 bits NVFP4, mais son prix a monté en 2026 à cause d’une pénurie de mémoire GDDR7 : une seule carte tient dans le budget, deux non. Enfin, la <strong>NVIDIA A100 40 Go</strong> en reconditionné (génération Ampere, 2020) est la seule voie pour atteindre 160 Go dans l’enveloppe, avec quatre cartes ; la version 80 Go, même reconditionnée, se négocie encore 15 000 à 21 000 $ l’unité et sort du budget.</p><div class="callout"><p>Ce qui est exclu, et pourquoi : les H100 et H200 coûtent 30 000 à 40 000 $ la carte, hors budget dès la première. Les serveurs à quatre GPU ou plus dépassent tous 34 000 $. À l’inverse, une seule carte de 48 Go ou 32 Go serait insuffisante pour un modèle 70B et pour la montée en charge prévue en 2027.</p></div><p>Le reste de la machine compte moins mais ne doit pas brider le GPU : un processeur serveur récent (AMD EPYC ou Intel Xeon), 128 à 256 Go de RAM, deux SSD NVMe pour le système et les modèles, une alimentation redondante et une carte réseau 10 Gb/s ou 25 Gb/s. Toutes les propositions ci-dessous respectent ce socle ou s’en approchent, l’écart étant signalé.</p>
+</section>
+<section class="modelfit">
+  <h2>Quels modèles tournent sur ces serveurs</h2>
+  <p>Un modèle ne tourne que s’il tient entièrement dans la mémoire des GPU, avec 15 à 30 % de marge pour les conversations en cours. Compressé en FP8, un modèle occupe environ un octet par paramètre ; compressé en 4 bits, environ un demi-octet. Pour les modèles à mélange d’experts (MoE), c’est le nombre total de paramètres qui compte pour la mémoire ; les paramètres actifs ne déterminent que la vitesse.</p>
+<table class="models wide"><thead><tr><th>Modèle ouvert (2026)</th><th>Taille</th><th>Mémoire en 4 bits</th><th>Serveurs à 96 Go</th><th>160 Go (4 × A100)</th><th>192 Go (2 × 96 Go)</th></tr></thead><tbody>
+<tr><td>Qwen3 32B, Mistral Small, Gemma</td><td>24 à 32 B</td><td>16 à 35 Go</td><td class="ok">Oui, nombreux utilisateurs</td><td class="ok">Oui</td><td class="ok">Oui</td></tr>
+<tr><td>Llama 3.3 70B, DeepSeek-R1 distillé 70B</td><td>70 B</td><td>≈ 40 Go (≈ 70 Go en FP8)</td><td class="ok">Oui, confortable</td><td class="ok">Oui, en FP8 aussi</td><td class="ok">Oui, en FP8 aussi</td></tr>
+<tr><td>gpt-oss-120b</td><td>120 B</td><td>≈ 63 Go (format natif MXFP4)</td><td class="ok">Oui</td><td class="ok">Oui</td><td class="ok">Oui</td></tr>
+<tr><td>GLM-4.5 Air</td><td>106 B</td><td>≈ 55 Go</td><td class="ok">Oui</td><td class="ok">Oui</td><td class="ok">Oui, en FP8 aussi</td></tr>
+<tr><td>Qwen3 235B</td><td>235 B</td><td>≈ 118 Go</td><td class="no">Non</td><td class="ok">Oui, juste</td><td class="ok">Oui</td></tr>
+<tr><td>DeepSeek V4 Flash</td><td>284 B</td><td>≈ 145 Go</td><td class="no">Non</td><td class="mid">À la limite, peu d’utilisateurs</td><td class="ok">Oui, juste</td></tr>
+<tr><td>GLM-5</td><td>744 B</td><td>≈ 370 Go</td><td class="no">Non</td><td class="no">Non</td><td class="no">Non</td></tr>
+<tr><td>Kimi K2</td><td>1 000 B</td><td>≈ 500 Go</td><td class="no">Non</td><td class="no">Non</td><td class="no">Non</td></tr>
+<tr><td>DeepSeek V4 Pro</td><td>1 600 B</td><td>≈ 800 Go</td><td class="no">Non</td><td class="no">Non</td><td class="no">Non</td></tr>
+</tbody></table>
+<p>Ce que cela signifie pour les machines du dossier. Les serveurs à une carte de 96 Go (Delta, Exxact, Puget, Dell, Kentino AI 96) font tourner la classe 70 à 120 milliards de paramètres : gpt-oss-120b, Llama 3.3 70B, GLM-4.5 Air, Qwen3 32B. Ce sont de vrais modèles, du niveau des services grand public de 2024 et 2025, et suffisants pour des agents métier, l’extraction de documents et l’interrogation de données. Le Dell R750xa reconditionné à quatre A100 (160 Go) ajoute Qwen3 235B. Le passage à 192 Go, possible sur les châssis Delta et Puget en ajoutant une seconde carte, ouvre DeepSeek V4 Flash.</p>
+<div class="callout"><p>Les modèles frontière ouverts (DeepSeek V4 Pro, GLM-5, Kimi K2) demandent un serveur à huit GPU H200 ou B200, soit 200 à 400 M FCFA. Ils restent accessibles par API pour les données non sensibles, ce qui est exactement le principe de la passerelle à paliers de la stratégie : le cloud pour le public, le serveur interne pour le sensible.</p></div>
+<p>Deux mises en garde. Les compressions extrêmes à 2 bits qui font « tenir » un modèle de 1 000 milliards de paramètres sur 128 Go dégradent nettement la qualité et ne conviennent pas à un usage professionnel. Et plus le modèle remplit la mémoire, moins il reste de place pour servir de nombreuses personnes en même temps : sur 96 Go, un 70B servira 20 à 60 utilisateurs correctement, un 120B un peu moins.</p>
+</section>
+<section class="training">
+  <h2>Et si l’on voulait entraîner des modèles ?</h2>
+  <p>Les machines de ce dossier sont dimensionnées pour l’<strong>inférence</strong>, c’est-à-dire faire répondre des modèles déjà entraînés. Entraîner demande beaucoup plus, et le mot recouvre trois réalités très différentes.</p>
+<table class="models"><thead><tr><th>Type d’entraînement</th><th>Ce que c’est</th><th>Mémoire GPU nécessaire</th><th>Faisable avec ces serveurs ?</th></tr></thead><tbody>
+<tr><td>Pré-entraînement</td><td>Créer un modèle à partir de zéro sur des milliers de milliards de mots</td><td>Des centaines à des milliers de GPU pendant des semaines</td><td>Non, et ce n’est pas le besoin</td></tr>
+<tr><td>Fine-tuning complet</td><td>Réentraîner tous les paramètres d’un modèle existant sur ses propres données</td><td>Environ 16 octets par paramètre : 110 à 130 Go pour un modèle 7B, plus de 1 To pour un 70B</td><td>Un 7B tient sur 2 cartes de 96 Go ; un 70B exige 8 à 16 cartes H100 ou équivalentes</td></tr>
+<tr><td>Fine-tuning léger (LoRA, QLoRA)</td><td>N’entraîner qu’un petit adaptateur greffé sur le modèle, celui-ci restant figé et compressé</td><td>20 à 48 Go pour un 7B à 14B ; 48 à 80 Go pour un 70B</td><td>Oui, sur une seule carte de 96 Go ou deux de 48 Go, avec des durées de quelques heures à quelques jours</td></tr>
+</tbody></table>
+<p>Concrètement : les usages du volet IA (agents métier, interrogation de la donnée en langage naturel, traitement de documents) se construisent sans entraîner de modèle, par l’assemblage du modèle, des données et d’instructions. Si un jour une spécialisation s’imposait, par exemple un modèle qui connaît le vocabulaire et les formulaires internes, la voie LoRA suffit et tient sur toutes les machines proposées, la Dell R750xa à quatre A100 et les châssis à deux emplacements (Delta, Puget) étant les plus à l’aise. Pour un entraînement plus lourd et ponctuel, louer des GPU à l’heure dans le cloud sur des données non sensibles ou anonymisées reste plus rationnel qu’acheter : une H100 se loue 2 à 3 $ de l’heure, soit moins de 150 000 FCFA la journée.</p>
+<p>Pendant l’entraînement, la carte est occupée à plein temps : elle ne peut pas servir les utilisateurs en même temps. Une machine à deux cartes permet de séparer les deux usages ; c’est un argument de plus pour un châssis qui garde un emplacement libre.</p>
+</section>
+</main>
+</body>
+</html>
